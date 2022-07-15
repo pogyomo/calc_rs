@@ -3,7 +3,9 @@ pub enum Token {
     Integer(u16),
     Ident(String),
 
-    Let,      // Let
+    Let,  // Let
+    Exit, // Exit
+    List, // List all variable
 
     LParenthesis, // '('
     RParenthesis, // ')'

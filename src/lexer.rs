@@ -41,8 +41,10 @@ impl<'a> Lexer<'a> {
             self.input = &self.input[sep..];
 
             match ret.to_lowercase().as_str() {
-                "let" => Some(Token::Let),
-                _ => Some(Token::Ident(ret.to_string())),
+                "let"  => Some(Token::Let),
+                "exit" => Some(Token::Exit),
+                "list" => Some(Token::List),
+                _      => Some(Token::Ident(ret.to_string())),
             }
         } else {
             None

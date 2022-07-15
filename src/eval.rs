@@ -1,3 +1,4 @@
+use std::process::exit;
 use crate::token::Token;
 use crate::Ident;
 
@@ -13,20 +14,34 @@ impl<'a> Eval<'a> {
     }
 
     pub fn eval(&mut self) -> Option<u16> {
-        if *self.token.get(self.pos)? == Token::Let {
-            self.pos += 1;
-            self.ident()
-        } else {
-            self.eval1()
+        match self.token.get(self.pos)? {
+            Token::Let => {
+                self.pos += 1;
+                self.ident()
+            }
+            Token::Exit => {
+                println!("Good Bye!");
+                exit(0);
+            }
+            Token::List => {
+                let mut count = 0;
+                for (name, value) in self.ident.map.iter() {
+                    count += 1;
+                    println!("{} = {}", name, value);
+                }
+                Some(count)
+            }
+            _ => self.eval1()
         }
     }
 }
 
 impl<'a> Eval<'a> {
     fn ident(&mut self) -> Option<u16> {
-        if let Token::Ident(ident) = self.token.get(self.pos)?.clone() {
+        if let Token::Ident(ref ident) = *self.token.get(self.pos)? {
             self.pos += 1;
             if Token::Equal == *self.token.get(self.pos)? {
+                let ident = ident.to_string();
                 self.pos += 1;
                 let value = self.eval1()?;
                 self.ident.register(ident, value);
@@ -90,9 +105,9 @@ impl<'a> Eval<'a> {
         } else if let Token::Integer(value) = *self.token.get(self.pos)?  {
             self.pos += 1;
             Some(value)
-        } else if let Token::Ident(ident) = self.token.get(self.pos)? {
+        } else if let Token::Ident(ref ident) = *self.token.get(self.pos)? {
             self.pos += 1;
-            Some(self.ident.value(&ident)?)
+            Some(self.ident.value(ident)?)
         } else {
             None
         }

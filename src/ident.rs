@@ -1,12 +1,12 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 pub struct Ident {
-    map: HashMap<String, u16>,
+    pub map: BTreeMap<String, u16>,
 }
 
 impl Ident {
     pub fn new() -> Ident {
-        Ident { map: HashMap::new() }
+        Ident { map: BTreeMap::new() }
     }
 
     pub fn register(&mut self, name: String, value: u16) {
